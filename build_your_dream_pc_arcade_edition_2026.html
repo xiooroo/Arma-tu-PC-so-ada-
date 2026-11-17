@@ -1,0 +1,1564 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ARMÁ TU PC SOÑADA | Arcade Expo Técnica 2026</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;800;900&family=Rajdhani:wght@500;600;700&family=Syne:wght@700;800&display=swap');
+
+:root {
+  --bg-main: #030712;
+  --hud-bg: rgba(6, 13, 31, 0.9);
+  --panel-bg: rgba(10, 19, 43, 0.86);
+  --card-bg: rgba(15, 29, 64, 0.72);
+  --card-hover: rgba(23, 45, 96, 0.92);
+  --border-neon: rgba(0, 240, 255, 0.34);
+  --text-main: #f1f7ff;
+  --text-muted: #93accf;
+  --cyan: #00f0ff;
+  --purple: #bd00ff;
+  --pink: #ff007f;
+  --green: #00ff9d;
+  --amber: #ffb800;
+  --grid-line: rgba(0, 240, 255, 0.055);
+}
+
+body.light {
+  --bg-main: #eaf2fd;
+  --hud-bg: rgba(255, 255, 255, 0.92);
+  --panel-bg: rgba(255, 255, 255, 0.94);
+  --card-bg: rgba(236, 244, 255, 0.85);
+  --card-hover: rgba(218, 233, 255, 0.98);
+  --border-neon: rgba(0, 102, 255, 0.3);
+  --text-main: #091326;
+  --text-muted: #465d82;
+  --cyan: #0066ff;
+  --purple: #8400e6;
+  --pink: #d9006c;
+  --green: #009e60;
+  --amber: #d98200;
+  --grid-line: rgba(0, 102, 255, 0.05);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  font-family: 'Rajdhani', sans-serif;
+  background-image:
+    radial-gradient(circle at 12% 15%, rgba(189, 0, 255, 0.14) 0%, transparent 38%),
+    radial-gradient(circle at 88% 82%, rgba(0, 240, 255, 0.14) 0%, transparent 40%),
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 36px 36px, 36px 36px;
+  transition: background-color 0.35s ease, color 0.35s ease;
+  overflow-x: hidden;
+}
+
+.font-tech { font-family: 'Orbitron', sans-serif; }
+.font-syne { font-family: 'Syne', sans-serif; }
+
+.arcade-panel {
+  background: var(--panel-bg);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1.5px solid var(--border-neon);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5), 0 0 30px rgba(0, 240, 255, 0.18);
+}
+
+.arcade-card {
+  background: var(--card-bg);
+  backdrop-filter: blur(10px);
+  border: 1.5px solid var(--border-neon);
+  transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.arcade-card:hover {
+  background: var(--card-hover);
+  transform: translateY(-4px) scale(1.012);
+  border-color: var(--cyan);
+  box-shadow: 0 0 24px rgba(0, 240, 255, 0.32);
+}
+
+.arcade-card.selected {
+  border-color: var(--cyan);
+  border-width: 2.5px;
+  background: linear-gradient(145deg, var(--card-hover), rgba(0, 240, 255, 0.2));
+  box-shadow: 0 0 28px rgba(0, 240, 255, 0.5), inset 0 0 18px rgba(0, 240, 255, 0.18);
+}
+
+.gloss-card.selected {
+  border-color: var(--purple);
+  border-width: 2px;
+  background: linear-gradient(145deg, var(--card-hover), rgba(189, 0, 255, 0.22));
+  box-shadow: 0 0 24px rgba(189, 0, 255, 0.45);
+}
+
+.text-cyan { color: var(--cyan); text-shadow: 0 0 12px rgba(0, 240, 255, 0.4); }
+.text-purple { color: var(--purple); text-shadow: 0 0 12px rgba(189, 0, 255, 0.4); }
+.text-pink { color: var(--pink); text-shadow: 0 0 12px rgba(255, 0, 127, 0.4); }
+.text-green { color: var(--green); }
+
+.bg-cyber-grad {
+  background: linear-gradient(135deg, var(--cyan) 0%, var(--purple) 52%, var(--pink) 100%);
+}
+
+.btn-game {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+  clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+  cursor: pointer;
+}
+
+.btn-game::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -120%;
+  width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.38), transparent);
+  transition: left 0.45s ease;
+}
+
+.btn-game:hover {
+  transform: translateY(-2px) scale(1.02);
+  filter: brightness(1.08);
+}
+
+.btn-game:hover::after { left: 120%; }
+.btn-game:active { transform: scale(0.97); }
+
+/* Carpeta de campo (Dossier) */
+.dossier-tab {
+  clip-path: polygon(0 0, 86% 0, 100% 100%, 0% 100%);
+}
+
+/* Pantallas sin scroll continuo */
+.stage {
+  display: none;
+  animation: stageEnter 0.36s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.stage.active {
+  display: block;
+}
+
+@keyframes stageEnter {
+  from { opacity: 0; transform: translateY(16px) scale(0.985); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes floatGlow {
+  0%, 100% { transform: translateY(0); box-shadow: 0 0 24px rgba(0, 240, 255, 0.35); }
+  50% { transform: translateY(-4px); box-shadow: 0 0 36px rgba(189, 0, 255, 0.55); }
+}
+
+.animate-arcade { animation: floatGlow 3.2s infinite ease-in-out; }
+
+/* Ecualizador animado */
+.eq-bar {
+  width: 3px;
+  background: var(--pink);
+  border-radius: 2px;
+  transition: height 0.15s ease;
+}
+.eq-playing .eq-bar:nth-child(1) { animation: eqAnim 0.45s infinite alternate; }
+.eq-playing .eq-bar:nth-child(2) { animation: eqAnim 0.3s infinite alternate 0.15s; }
+.eq-playing .eq-bar:nth-child(3) { animation: eqAnim 0.5s infinite alternate 0.25s; }
+@keyframes eqAnim { from { height: 4px; } to { height: 14px; } }
+
+.custom-scroll::-webkit-scrollbar { width: 6px; }
+.custom-scroll::-webkit-scrollbar-track { background: transparent; }
+.custom-scroll::-webkit-scrollbar-thumb { background: var(--cyan); border-radius: 99px; }
+
+/* QR container blanco limpio para máxima legibilidad de escaneo */
+#qrcodeBox img, #qrcodeBox canvas {
+  margin: 0 auto;
+  border-radius: 8px;
+}
+
+@media print {
+  header, footer, .no-print { display: none !important; }
+  body { background: #ffffff !important; color: #091326 !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  .arcade-panel { box-shadow: none !important; border: 2px solid #0066ff !important; }
+}
+</style>
+</head>
+<body class="min-h-screen flex flex-col justify-between custom-scroll">
+
+  <!-- ========================================================= -->
+  <!-- BARRA HUD SUPERIOR ESTILO VIDEOJUEGO                      -->
+  <!-- ========================================================= -->
+  <header class="sticky top-0 z-50 border-b border-[var(--border-neon)] bg-[var(--hud-bg)] backdrop-blur-xl px-3 md:px-6 py-2.5">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2.5">
+
+      <!-- Logo / Botón Home -->
+      <button onclick="goStage(0, 'whoosh')" class="flex items-center gap-3 text-left group cursor-pointer">
+        <div class="w-10 h-10 rounded-xl bg-cyber-grad p-[2px] animate-arcade shrink-0">
+          <div class="w-full h-full bg-[var(--bg-main)] rounded-[10px] flex items-center justify-center font-tech font-black text-sm text-cyan">
+            PC
+          </div>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="font-tech text-sm md:text-base font-black tracking-wider text-cyan leading-none" data-t="brandTitle">ARMÁ TU PC SOÑADA</span>
+            <span class="hidden sm:inline-block px-2 py-0.5 rounded bg-[var(--purple)]/20 border border-[var(--purple)]/40 font-tech text-[10px] font-bold text-purple">LVL <span id="hudLvl">0</span>/6</span>
+          </div>
+          <span class="text-[11px] text-[var(--text-muted)] font-bold uppercase tracking-wider block mt-0.5" data-t="brandSub">Expo Técnica 2026 · Hardware + Inglés Técnico</span>
+        </div>
+      </button>
+
+      <!-- Barra de progreso de misión (HUD) -->
+      <div class="hidden xl:flex items-center gap-1.5 bg-[var(--card-bg)] px-3 py-1.5 rounded-full border border-[var(--border-neon)] font-tech text-[10px] font-bold">
+        <span id="pill-0" class="px-2 py-0.5 rounded-full text-cyan" data-t="p0">0. Inicio</span>
+        <span class="opacity-40">▸</span>
+        <span id="pill-1" class="px-2 py-0.5 rounded-full text-[var(--text-muted)]" data-t="p1">1. Carpeta</span>
+        <span class="opacity-40">▸</span>
+        <span id="pill-2" class="px-2 py-0.5 rounded-full text-[var(--text-muted)]">2. CPU</span>
+        <span class="opacity-40">▸</span>
+        <span id="pill-3" class="px-2 py-0.5 rounded-full text-[var(--text-muted)]">3. GPU</span>
+        <span class="opacity-40">▸</span>
+        <span id="pill-4" class="px-2 py-0.5 rounded-full text-[var(--text-muted)]">4. RAM</span>
+        <span class="opacity-40">▸</span>
+        <span id="pill-5" class="px-2 py-0.5 rounded-full text-[var(--text-muted)]" data-t="p5">5. Glosario</span>
+        <span class="opacity-40">▸</span>
+        <span id="pill-6" class="px-2 py-0.5 rounded-full text-[var(--text-muted)]" data-t="p6">6. Ficha QR</span>
+      </div>
+
+      <!-- Controles HUD: Idioma, Tema y Audio -->
+      <div class="flex items-center gap-2 flex-wrap">
+        <button id="langBtn" class="btn-game arcade-card px-3 py-1.5 font-tech text-xs font-bold text-cyan flex items-center gap-1.5">
+          🌐 <span id="langLabel">English</span>
+        </button>
+
+        <button id="themeBtn" class="btn-game arcade-card px-3 py-1.5 font-tech text-xs font-bold text-purple flex items-center gap-1.5">
+          <span id="themeIcon">☀️</span> <span id="themeLabel" data-t="themeLight">Modo Claro</span>
+        </button>
+
+        <div class="flex items-center gap-2 arcade-card px-3 py-1.5 rounded-xl">
+          <button id="musicBtn" class="font-tech text-xs font-bold text-pink flex items-center gap-1.5 cursor-pointer">
+            <span id="eqViz" class="flex items-end gap-[2px] h-3.5">
+              <span class="eq-bar h-1.5"></span>
+              <span class="eq-bar h-2.5"></span>
+              <span class="eq-bar h-1.5"></span>
+            </span>
+            <span id="musicLabel" data-t="musicOn">Música OFF</span>
+          </button>
+          <input id="volSlider" type="range" min="0" max="100" value="65" aria-label="Volumen" class="w-16 md:w-20 accent-[var(--pink)] cursor-pointer">
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================================= -->
+  <!-- CONTENEDOR CENTRAL DE PANTALLAS TIPO VIDEOJUEGO           -->
+  <!-- ========================================================= -->
+  <main class="flex-grow max-w-6xl w-full mx-auto px-4 py-5 md:py-7 flex flex-col justify-center">
+
+    <!-- ======================================================= -->
+    <!-- PANTALLA 0: PORTADA ARCADE                              -->
+    <!-- ======================================================= -->
+    <section id="stage-0" class="stage active">
+      <div class="arcade-panel rounded-3xl p-6 md:p-11 relative overflow-hidden">
+        <div class="absolute -top-24 -right-24 w-80 h-80 bg-[var(--cyan)]/20 rounded-full blur-[90px] pointer-events-none"></div>
+        <div class="absolute -bottom-24 -left-24 w-80 h-80 bg-[var(--purple)]/20 rounded-full blur-[90px] pointer-events-none"></div>
+
+        <div class="grid lg:grid-cols-12 gap-8 items-center relative z-10">
+          <div class="lg:col-span-7 space-y-5">
+            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[var(--cyan)]/15 border border-[var(--cyan)]/45 font-tech text-xs font-bold text-cyan tracking-widest">
+              🕹️ <span data-t="heroBadge">ARCADE HARDWARE CHALLENGE · EXPO TÉCNICA 2026</span>
+            </div>
+
+            <h1 class="font-syne text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-none tracking-tight">
+              <span data-t="heroTitle1">ARMÁ TU PC</span><br>
+              <span class="text-transparent bg-clip-text bg-cyber-grad" data-t="heroTitle2">SOÑADA</span>
+            </h1>
+
+            <p class="font-tech text-sm md:text-base font-bold text-purple" data-t="heroSlogan">
+              ¿Cuántos FPS tenés? · Desafío Interactivo de Hardware e Inglés Técnico
+            </p>
+
+            <p class="text-base md:text-lg text-[var(--text-muted)] leading-relaxed font-medium" data-t="heroDesc">
+              ¡Bienvenido al stand gamer! Sumergite en esta experiencia tipo videojuego: abrí tu carpeta de campo, elegí procesador, placa de video y memoria RAM con precios reales, coleccioná cartas del glosario bilingüe y llevate tu ficha a todo color o en tu celular mediante código QR.
+            </p>
+
+            <!-- Mini tarjetas de características -->
+            <div class="grid grid-cols-3 gap-3">
+              <div class="arcade-card p-3 rounded-xl text-center">
+                <span class="font-tech text-xs font-black text-cyan block" data-t="f1Title">3 BANDEJAS</span>
+                <span class="text-xs text-[var(--text-muted)]">CPU · GPU · RAM</span>
+              </div>
+              <div class="arcade-card p-3 rounded-xl text-center">
+                <span class="font-tech text-xs font-black text-purple block" data-t="f2Title">30 CARTAS</span>
+                <span class="text-xs text-[var(--text-muted)]" data-t="f2Sub">Glosario Coleccionable</span>
+              </div>
+              <div class="arcade-card p-3 rounded-xl text-center">
+                <span class="font-tech text-xs font-black text-pink block" data-t="f3Title">FICHA + QR</span>
+                <span class="text-xs text-[var(--text-muted)]" data-t="f3Sub">Imprimible o Móvil</span>
+              </div>
+            </div>
+
+            <div class="pt-2 flex flex-wrap items-center gap-4">
+              <button onclick="startGameMission()" class="btn-game bg-cyber-grad text-black font-tech font-black text-sm md:text-base px-8 py-4 shadow-2xl flex items-center gap-3 animate-arcade">
+                ▶ <span data-t="btnStart">START / EMPEZAR MISIÓN</span>
+              </button>
+              <button onclick="goStage(5, 'whoosh')" class="btn-game arcade-card text-[var(--text-main)] font-tech font-bold text-xs md:text-sm px-5 py-4 flex items-center gap-2">
+                🃏 <span data-t="btnJumpGloss">EXPLORAR GLOSARIO</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="lg:col-span-5 flex justify-center">
+            <div class="relative w-full max-w-sm aspect-square rounded-3xl overflow-hidden arcade-card p-3 border-2 border-[var(--cyan)]/45 group">
+              <div class="w-full h-full rounded-2xl overflow-hidden relative">
+                <img src="https://images.unsplash.com/photo-1587202372775-e229f172b9d7?auto=format&fit=crop&w=900&q=85" alt="PC Gamer Cyberpunk" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                <div class="absolute inset-0 bg-gradient-to-t from-[#030712] via-transparent to-transparent opacity-90"></div>
+                <div class="absolute bottom-4 left-4 right-4 p-4 rounded-xl bg-[#060d1f]/90 border border-[var(--cyan)]/50 backdrop-blur-md">
+                  <div class="flex items-center justify-between">
+                    <span class="font-tech text-[10px] font-bold text-cyan uppercase">PLAYER 1 READY</span>
+                    <span class="font-tech text-[10px] font-bold text-green">● ONLINE</span>
+                  </div>
+                  <p class="font-tech text-sm font-bold text-white mt-1" data-t="heroCardSub">Instalación de Hardware + Inglés Técnico</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================= -->
+    <!-- PANTALLA 1: CARPETA DE CAMPO (EXPEDIENTE DEL JUGADOR)   -->
+    <!-- ======================================================= -->
+    <section id="stage-1" class="stage">
+      <div class="max-w-4xl mx-auto">
+        <!-- Pestaña superior de carpeta técnica -->
+        <div class="dossier-tab w-64 sm:w-80 bg-cyber-grad text-black font-tech text-xs font-black px-5 py-2 uppercase tracking-widest">
+          📁 <span data-t="dossierTab">CARPETA DE CAMPO · EXPEDIENTE</span>
+        </div>
+
+        <div class="arcade-panel rounded-b-3xl rounded-tr-3xl p-6 md:p-9 border-2 border-[var(--cyan)]/50 space-y-6">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[var(--border-neon)] pb-4">
+            <div>
+              <span class="font-tech text-xs font-bold text-cyan uppercase tracking-widest" data-t="dossierBadge">MISIÓN TÉCNICA · PASO PREVIO</span>
+              <h2 class="font-tech text-2xl md:text-3xl font-black mt-1" data-t="dossierTitle">EXPEDIENTE DE ARMADO GAMER</h2>
+            </div>
+            <div class="px-3.5 py-2 rounded-xl arcade-card font-tech text-xs font-bold text-purple">
+              ID: <span id="dossierCodePreview">PC-2026</span>
+            </div>
+          </div>
+
+          <!-- Input del nombre del visitante / jugador -->
+          <div class="grid md:grid-cols-2 gap-6 items-center">
+            <div class="space-y-3">
+              <label for="playerNameInput" class="font-tech text-xs font-bold text-cyan uppercase tracking-wider block" data-t="playerLabel">
+                NOMBRE DEL VISITANTE / GAMER TAG:
+              </label>
+              <input id="playerNameInput" type="text" maxlength="26" placeholder="Ej: Alex Gamer / Visitante Expo" class="w-full arcade-card px-4 py-3.5 rounded-xl border-2 border-[var(--border-neon)] focus:border-[var(--cyan)] outline-none font-tech text-sm font-bold">
+              <p class="text-xs text-[var(--text-muted)]" data-t="playerHelp">
+                Tu nombre aparecerá impreso en la ficha de presupuesto oficial y en el código QR para tu celular.
+              </p>
+            </div>
+
+            <!-- Briefing de objetivos de la misión -->
+            <div class="arcade-card p-4 rounded-2xl space-y-2.5 border border-[var(--purple)]/40">
+              <h3 class="font-tech text-xs font-black text-purple uppercase tracking-wider" data-t="briefTitle">🎯 OBJETIVOS DE LA MISIÓN:</h3>
+              <div class="flex items-start gap-2.5 text-xs md:text-sm">
+                <span class="font-tech font-bold text-cyan">01.</span>
+                <span data-t="obj1">Seleccionar 1 componente de cada bandeja (CPU, GPU y RAM) evaluando rendimiento y precio.</span>
+              </div>
+              <div class="flex items-start gap-2.5 text-xs md:text-sm">
+                <span class="font-tech font-bold text-purple">02.</span>
+                <span data-t="obj2">Elegir cartas técnicas del Glosario Gamer para sumarlas a tu inventario.</span>
+              </div>
+              <div class="flex items-start gap-2.5 text-xs md:text-sm">
+                <span class="font-tech font-bold text-pink">03.</span>
+                <span data-t="obj3">Calcular tus FPS reales y llevarte tu ficha a todo color o escaneada por QR.</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Botones de navegación -->
+          <div class="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-[var(--border-neon)]">
+            <button onclick="goStage(0, 'whoosh')" class="btn-game arcade-card px-5 py-3 font-tech text-xs font-bold uppercase">
+              ← <span data-t="btnBackStart">Volver a Portada</span>
+            </button>
+            <button onclick="goStage(2, 'whoosh')" class="btn-game bg-cyber-grad text-black px-7 py-3.5 font-tech text-xs md:text-sm font-black uppercase flex items-center gap-2">
+              ⚡ <span data-t="btnOpenTrays">ABRIR BANDEJA 1: CPU</span> →
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================= -->
+    <!-- PANTALLA 2: BANDEJA 1 - CPU (PROCESADOR)                -->
+    <!-- ======================================================= -->
+    <section id="stage-2" class="stage">
+      <div class="arcade-panel rounded-3xl p-6 md:p-8 space-y-5">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[var(--border-neon)] pb-4">
+          <div>
+            <span class="font-tech text-xs font-bold text-cyan uppercase tracking-widest" data-t="t1Badge">BANDEJA 01 / 03 · PROCESADOR</span>
+            <h2 class="font-tech text-2xl md:text-3xl font-black mt-0.5" data-t="t1Title">ELEGÍ TU PROCESADOR (CPU)</h2>
+            <p class="text-sm text-[var(--text-muted)]" data-t="t1Sub">Es el cerebro del equipo: procesa la lógica, física y velocidad de respuesta de los juegos.</p>
+          </div>
+          <span class="px-3.5 py-1.5 rounded-full arcade-card font-tech text-xs font-bold text-cyan self-start sm:self-auto">STEP 1 / 3</span>
+        </div>
+
+        <div id="grid-cpu" class="grid md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+
+        <div class="flex items-center justify-between pt-4 border-t border-[var(--border-neon)]">
+          <button onclick="goStage(1, 'whoosh')" class="btn-game arcade-card px-5 py-3 font-tech text-xs font-bold uppercase">
+            ← <span data-t="btnBackDossier">Volver a Carpeta</span>
+          </button>
+          <button onclick="nextFromPart('cpu', 3)" class="btn-game bg-cyber-grad text-black px-7 py-3.5 font-tech text-xs md:text-sm font-black uppercase">
+            <span data-t="btnToGpu">Siguiente: Bandeja GPU</span> →
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================= -->
+    <!-- PANTALLA 3: BANDEJA 2 - GPU (PLACA DE VIDEO)            -->
+    <!-- ======================================================= -->
+    <section id="stage-3" class="stage">
+      <div class="arcade-panel rounded-3xl p-6 md:p-8 space-y-5">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[var(--border-neon)] pb-4">
+          <div>
+            <span class="font-tech text-xs font-bold text-purple uppercase tracking-widest" data-t="t2Badge">BANDEJA 02 / 03 · GRÁFICOS</span>
+            <h2 class="font-tech text-2xl md:text-3xl font-black mt-0.5" data-t="t2Title">ELEGÍ TU PLACA DE VIDEO (GPU)</h2>
+            <p class="text-sm text-[var(--text-muted)]" data-t="t2Sub">Renderiza los gráficos 3D y define cuántos cuadros por segundo (FPS) vas a lograr.</p>
+          </div>
+          <span class="px-3.5 py-1.5 rounded-full arcade-card font-tech text-xs font-bold text-purple self-start sm:self-auto">STEP 2 / 3</span>
+        </div>
+
+        <div id="grid-gpu" class="grid md:grid-cols-3 gap-5"></div>
+
+        <div class="flex items-center justify-between pt-4 border-t border-[var(--border-neon)]">
+          <button onclick="goStage(2, 'whoosh')" class="btn-game arcade-card px-5 py-3 font-tech text-xs font-bold uppercase">
+            ← <span data-t="btnBackCpu">Volver a CPU</span>
+          </button>
+          <button onclick="nextFromPart('gpu', 4)" class="btn-game bg-cyber-grad text-black px-7 py-3.5 font-tech text-xs md:text-sm font-black uppercase">
+            <span data-t="btnToRam">Siguiente: Bandeja RAM</span> →
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================= -->
+    <!-- PANTALLA 4: BANDEJA 3 - RAM (MEMORIA)                   -->
+    <!-- ======================================================= -->
+    <section id="stage-4" class="stage">
+      <div class="arcade-panel rounded-3xl p-6 md:p-8 space-y-5">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[var(--border-neon)] pb-4">
+          <div>
+            <span class="font-tech text-xs font-bold text-pink uppercase tracking-widest" data-t="t3Badge">BANDEJA 03 / 03 · MEMORIA</span>
+            <h2 class="font-tech text-2xl md:text-3xl font-black mt-0.5" data-t="t3Title">ELEGÍ TU MEMORIA RAM</h2>
+            <p class="text-sm text-[var(--text-muted)]" data-t="t3Sub">Guarda temporalmente los datos activos del juego para evitar tirones (Lag) y acelerar cargas.</p>
+          </div>
+          <span class="px-3.5 py-1.5 rounded-full arcade-card font-tech text-xs font-bold text-pink self-start sm:self-auto">STEP 3 / 3</span>
+        </div>
+
+        <div id="grid-ram" class="grid md:grid-cols-3 gap-5"></div>
+
+        <div class="flex items-center justify-between pt-4 border-t border-[var(--border-neon)]">
+          <button onclick="goStage(3, 'whoosh')" class="btn-game arcade-card px-5 py-3 font-tech text-xs font-bold uppercase">
+            ← <span data-t="btnBackGpu">Volver a GPU</span>
+          </button>
+          <button onclick="nextFromPart('ram', 5)" class="btn-game bg-cyber-grad text-black px-7 py-3.5 font-tech text-xs md:text-sm font-black uppercase">
+            <span data-t="btnToGlossary">Continuar al Glosario</span> →
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================= -->
+    <!-- PANTALLA 5: GLOSARIO INTERACTIVO COLECCIONABLE          -->
+    <!-- ======================================================= -->
+    <section id="stage-5" class="stage">
+      <div class="arcade-panel rounded-3xl p-6 md:p-8 space-y-5">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-[var(--border-neon)] pb-4">
+          <div>
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="font-tech text-xs font-bold text-purple uppercase tracking-widest" data-t="glossBadge">CARTAS DE CONOCIMIENTO · 30 TÉRMINOS</span>
+              <span class="px-2.5 py-0.5 rounded-full bg-[var(--purple)]/20 border border-[var(--purple)]/40 font-tech text-[11px] font-bold text-purple">
+                <span data-t="selectedCardsCount">Cartas elegidas:</span> <span id="glossCounter">0</span>
+              </span>
+            </div>
+            <h2 class="font-tech text-2xl md:text-3xl font-black mt-1" data-t="glossTitle">GLOSARIO GAMER COLECCIONABLE</h2>
+            <p class="text-sm text-[var(--text-muted)]" data-t="glossSub">Tocá una o más tarjetas para guardarlas en tu mochila y que salgan en tu presupuesto final.</p>
+          </div>
+
+          <div class="w-full lg:w-80">
+            <input id="searchInput" type="text" placeholder="🔎 Buscar término técnico..." class="w-full arcade-card px-4 py-3 rounded-xl border border-[var(--border-neon)] focus:border-[var(--cyan)] outline-none text-sm font-semibold">
+          </div>
+        </div>
+
+        <!-- Cuadrícula de las 30 cartas seleccionables -->
+        <div id="glossaryGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3.5 max-h-[50vh] overflow-y-auto pr-1 custom-scroll"></div>
+
+        <div class="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-[var(--border-neon)]">
+          <button onclick="goStage(4, 'whoosh')" class="btn-game arcade-card px-5 py-3 font-tech text-xs font-bold uppercase">
+            ← <span data-t="btnBackRam">Volver a RAM</span>
+          </button>
+          <button onclick="openBudgetSheet()" class="btn-game bg-cyber-grad text-black px-7 py-3.5 font-tech text-xs md:text-sm font-black uppercase flex items-center gap-2 animate-arcade">
+            🏆 <span data-t="btnFinishBudget">GENERAR MI PRESUPUESTO + QR</span> →
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================= -->
+    <!-- PANTALLA 6: HOJA DE PRESUPUESTO A TODO COLOR + QR       -->
+    <!-- ======================================================= -->
+    <section id="stage-6" class="stage">
+      <div class="arcade-panel rounded-3xl overflow-hidden border-2 border-[var(--cyan)]/60 shadow-2xl">
+
+        <!-- Encabezado vibrante a todo color de la hoja -->
+        <div class="bg-cyber-grad p-6 md:p-7 text-black flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <div>
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="px-2.5 py-0.5 rounded bg-black text-[#00f0ff] font-tech text-[10px] font-black uppercase tracking-widest" data-t="sheetTag">
+                FICHA OFICIAL · EXPO TÉCNICA 2026
+              </span>
+              <span id="sheetPassCode" class="px-2.5 py-0.5 rounded bg-white/90 text-black font-tech text-[10px] font-black">
+                CODE: PC-2026-8842
+              </span>
+            </div>
+            <h2 class="font-syne text-2xl md:text-4xl font-extrabold mt-1.5 tracking-tight" data-t="sheetTitle">
+              PRESUPUESTO DREAM PC
+            </h2>
+            <p class="font-tech text-xs md:text-sm font-extrabold uppercase mt-0.5">
+              👤 <span data-t="sheetPlayer">JUGADOR / VISITANTE:</span> <span id="sheetPlayerName" class="underline">VISITANTE EXPO</span>
+            </p>
+          </div>
+
+          <div class="no-print flex flex-wrap gap-2">
+            <button onclick="window.print()" class="btn-game bg-black text-[#00f0ff] font-tech text-xs font-bold px-4 py-3 flex items-center gap-2 shadow-lg">
+              🖨 <span data-t="btnPrintColor">Imprimir Ficha</span>
+            </button>
+            <button onclick="copyMobileLink()" class="btn-game bg-white text-black font-tech text-xs font-black px-4 py-3 flex items-center gap-2 shadow-lg">
+              📱 <span data-t="btnCopyMobile">Copiar Enlace Móvil</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Cuerpo de la hoja a todo color -->
+        <div class="p-6 md:p-8 space-y-6">
+          <div class="grid lg:grid-cols-12 gap-6">
+
+            <!-- Columna Izquierda (7 cols): Hardware + Total + Cartas de Glosario Elegidas -->
+            <div class="lg:col-span-7 space-y-5">
+              <div>
+                <h3 class="font-tech text-xs font-black text-cyan uppercase tracking-wider mb-3" data-t="sheetHardware">
+                  ⚡ HARDWARE SELECCIONADO
+                </h3>
+                <div id="summaryHardware" class="space-y-2.5"></div>
+              </div>
+
+              <!-- Recuadro de Total a todo color -->
+              <div class="p-5 rounded-2xl bg-gradient-to-r from-[#00f0ff]/20 via-[#bd00ff]/20 to-[#ff007f]/20 border-2 border-[var(--cyan)] flex flex-wrap justify-between items-center gap-4">
+                <div>
+                  <span class="font-tech text-[11px] font-bold uppercase text-[var(--text-muted)] block" data-t="sheetTotalLabel">INVERSIÓN TOTAL ESTIMADA</span>
+                  <span id="sheetTotalARS" class="font-tech text-2xl md:text-3xl font-black text-cyan">$0 ARS</span>
+                </div>
+                <div class="sm:text-right">
+                  <span class="font-tech text-[11px] font-bold uppercase text-[var(--text-muted)] block" data-t="sheetUsdLabel">DÓLARES (REF. $1.570)</span>
+                  <span id="sheetTotalUSD" class="font-tech text-xl md:text-2xl font-black text-green">$0 USD</span>
+                </div>
+              </div>
+
+              <!-- Cartas del Glosario Elegidas incluidas en el presupuesto -->
+              <div class="p-4 rounded-2xl bg-[var(--purple)]/12 border-2 border-[var(--purple)]/45 space-y-3">
+                <div class="flex items-center justify-between">
+                  <h3 class="font-tech text-xs font-black text-purple uppercase tracking-wider" data-t="sheetGlossaryTitle">
+                    🃏 CARTAS DE GLOSARIO EN TU PRESUPUESTO
+                  </h3>
+                  <span class="font-tech text-[10px] font-bold px-2 py-0.5 rounded bg-[var(--purple)] text-white" data-t="sheetBonusTag">
+                    BONUS TÉCNICO
+                  </span>
+                </div>
+                <div id="summaryGlossaryCards" class="grid sm:grid-cols-2 gap-2.5"></div>
+              </div>
+            </div>
+
+            <!-- Columna Derecha (5 cols): FPS + Diagnóstico + Código QR para llevar en el teléfono -->
+            <div class="lg:col-span-5 space-y-4">
+
+              <!-- Medidor de FPS -->
+              <div class="p-5 rounded-2xl bg-gradient-to-b from-[#00f0ff]/18 to-transparent border-2 border-[var(--cyan)]/50 text-center space-y-1.5">
+                <span class="font-tech text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-wider" data-t="sheetFpsTitle">RENDIMIENTO ESTIMADO</span>
+                <div id="sheetFpsValue" class="font-tech text-5xl md:text-6xl font-black text-transparent bg-clip-text bg-cyber-grad">
+                  120 FPS
+                </div>
+                <p id="sheetFpsBadge" class="font-tech text-xs font-extrabold text-cyan uppercase"></p>
+                <p id="sheetFpsNote" class="text-xs text-[var(--text-muted)] leading-relaxed"></p>
+              </div>
+
+              <!-- Diagnóstico Técnico -->
+              <div class="grid grid-cols-1 gap-2.5">
+                <div class="p-3.5 rounded-xl bg-amber-500/15 border border-amber-400/50 flex gap-2.5 items-start">
+                  <span class="text-base">⚠️</span>
+                  <div>
+                    <h4 class="font-tech text-[11px] font-black text-amber-400 uppercase" data-t="diagBottleneck">CUELLO DE BOTELLA (BOTTLENECK)</h4>
+                    <p id="sheetBottleneck" class="text-xs text-[var(--text-muted)] mt-0.5 leading-relaxed"></p>
+                  </div>
+                </div>
+                <div class="p-3.5 rounded-xl bg-sky-500/15 border border-sky-400/50 flex gap-2.5 items-start">
+                  <span class="text-base">❄️</span>
+                  <div>
+                    <h4 class="font-tech text-[11px] font-black text-sky-400 uppercase" data-t="diagCooling">REFRIGERACIÓN RECOMENDADA</h4>
+                    <p id="sheetCooling" class="text-xs text-[var(--text-muted)] mt-0.5 leading-relaxed"></p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- TARJETA DE CÓDIGO QR PARA LLEVAR EN EL CELULAR SIN IMPRESORA -->
+              <div class="p-4 rounded-2xl bg-gradient-to-br from-[#00f0ff]/15 to-[#bd00ff]/15 border-2 border-[var(--pink)]/60 text-center space-y-2.5">
+                <div class="inline-block px-3 py-0.5 rounded-full bg-[var(--pink)] text-white font-tech text-[10px] font-black uppercase tracking-wider" data-t="qrBadge">
+                  📱 LLEVATE TU PRESUPUESTO EN EL CELULAR
+                </div>
+                <p class="text-xs text-[var(--text-muted)] font-semibold" data-t="qrDesc">
+                  Si no hay impresora, escaneá este código QR con tu cámara para abrir esta misma hoja en tu teléfono:
+                </p>
+                <div class="bg-white p-3 rounded-2xl inline-block shadow-xl border-2 border-black">
+                  <div id="qrcodeBox"></div>
+                </div>
+                <div class="font-tech text-xs font-black text-pink" id="qrCodeText">PC-2026-8842</div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Pie de navegación de la pantalla 6 -->
+          <div class="no-print flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-[var(--border-neon)]">
+            <button onclick="goStage(5, 'whoosh')" class="btn-game arcade-card px-5 py-3 font-tech text-xs font-bold uppercase">
+              ← <span data-t="btnBackGloss">Editar Cartas de Glosario</span>
+            </button>
+            <button onclick="restartAllGame()" class="btn-game bg-cyber-grad text-black px-6 py-3 font-tech text-xs font-black uppercase">
+              🔄 <span data-t="btnNewBuild">Nueva Partida / Nuevo Visitante</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- NOTIFICACIÓN FLOTANTE -->
+  <div id="toast" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 hidden px-5 py-3 rounded-xl bg-cyber-grad text-black font-tech text-xs font-black shadow-2xl"></div>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-[var(--border-neon)] bg-[var(--hud-bg)] py-3.5 px-4 text-center text-xs text-[var(--text-muted)]">
+    <span class="font-tech font-bold text-cyan" data-t="brandTitle">ARMÁ TU PC SOÑADA</span> ·
+    <span data-t="footerSub">Expo Técnica 2026 · Instalación de Hardware + Inglés Técnico</span>
+  </footer>
+
+  <script>
+    // =========================================================
+    // ESTADO GLOBAL DEL JUEGO
+    // =========================================================
+    const RATE = 1570;
+    let lang = 'es';
+    let darkMode = true;
+    let currentStage = 0;
+    let selectedParts = { cpu: null, gpu: null, ram: null };
+    let selectedGlossaryTerms = new Set();
+    let passCode = 'PC-2026-' + Math.floor(1000 + Math.random() * 9000);
+
+    // =========================================================
+    // CATÁLOGO DE HARDWARE REAL (ARS + USD + DESCRIPCIÓN)
+    // =========================================================
+    const HARDWARE = {
+      cpu: [
+        {
+          id: 'i3-12100f',
+          name: 'Intel Core i3-12100F',
+          spec_es: '4 Núcleos · Socket LGA1700',
+          spec_en: '4 Cores · LGA1700 Socket',
+          store: 'Compra Gamer',
+          ars: 158092,
+          tier: 1,
+          img: 'https://images.unsplash.com/photo-1555617981-dac3880eac6e?auto=format&fit=crop&w=600&q=80',
+          desc_es: 'Procesador ágil de entrada, ideal para gaming económico en 1080p y tareas cotidianas.',
+          desc_en: 'Agile entry-level processor, great for budget 1080p gaming and everyday tasks.'
+        },
+        {
+          id: 'r5-5500',
+          name: 'AMD Ryzen 5 5500',
+          spec_es: '6 Núcleos · Socket AM4',
+          spec_en: '6 Cores · AM4 Socket',
+          store: '38-3D',
+          ars: 232051.73,
+          tier: 2,
+          img: 'https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?auto=format&fit=crop&w=600&q=80',
+          desc_es: 'Gran equilibrio precio-potencia con 6 núcleos para multitarea y juegos competitivos fluidos.',
+          desc_en: 'Great price-to-power balance with 6 cores for multitasking and smooth competitive gaming.'
+        },
+        {
+          id: 'i5-14400',
+          name: 'Intel Core i5-14400',
+          spec_es: '10 Núcleos · Socket LGA1700',
+          spec_en: '10 Cores · LGA1700 Socket',
+          store: 'Compra Gamer',
+          ars: 355128,
+          tier: 2,
+          img: 'https://images.unsplash.com/photo-1555617981-dac3880eac6e?auto=format&fit=crop&w=600&q=80',
+          desc_es: 'Arquitectura híbrida de 10 núcleos que evita cuellos de botella en placas de video modernas.',
+          desc_en: '10-core hybrid architecture that prevents bottlenecks with modern graphics cards.'
+        },
+        {
+          id: 'r7-5700x',
+          name: 'AMD Ryzen 7 5700X',
+          spec_es: '8 Núcleos · Socket AM4',
+          spec_en: '8 Cores · AM4 Socket',
+          store: 'Luma Computación',
+          ars: 460000,
+          tier: 3,
+          img: 'https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?auto=format&fit=crop&w=600&q=80',
+          desc_es: 'Potencia de 8 núcleos para gaming exigente a 144 FPS y creación de contenido.',
+          desc_en: '8-core powerhouse built for demanding 144 FPS gaming and content creation.'
+        },
+        {
+          id: 'i7-14700',
+          name: 'Intel Core i7-14700',
+          spec_es: '20 Núcleos · Socket LGA1700',
+          spec_en: '20 Cores · LGA1700 Socket',
+          store: 'ACH',
+          ars: 898500,
+          tier: 3,
+          img: 'https://images.unsplash.com/photo-1555617981-dac3880eac6e?auto=format&fit=crop&w=600&q=80',
+          desc_es: 'Gama entusiasta de 20 núcleos para máximo rendimiento. Requiere refrigeración líquida 240mm.',
+          desc_en: 'Enthusiast 20-core processor for peak performance. Requires 240mm liquid cooling.'
+        }
+      ],
+      gpu: [
+        {
+          id: 'rtx3060',
+          name: 'NVIDIA GeForce RTX 3060',
+          spec_es: '12 GB GDDR6 · ~90 FPS Medio',
+          spec_en: '12 GB GDDR6 · ~90 FPS Medium',
+          store: 'Mercado Libre',
+          ars: 1950000,
+          fps: 90,
+          tier: 1,
+          img: 'https://images.unsplash.com/photo-1591488320449-011701bb6704?auto=format&fit=crop&w=600&q=80',
+          desc_es: 'Sus 12 GB de VRAM ofrecen gran estabilidad en 1080p calidad media/alta con Ray Tracing.',
+          desc_en: 'Its 12 GB VRAM delivers high stability at 1080p medium/high settings with Ray Tracing.'
+        },
+        {
+          id: 'rtx4060',
+          name: 'NVIDIA GeForce RTX 4060',
+          spec_es: '8 GB GDDR6 · ~120 FPS Alto',
+          spec_en: '8 GB GDDR6 · ~120 FPS High',
+          store: 'eBay (ref.)',
+          ars: 1125950.63,
+          fps: 120,
+          tier: 2,
+          img: 'https://images.unsplash.com/photo-1587202372775-e229f172b9d7?auto=format&fit=crop&w=600&q=80',
+          desc_es: 'Arquitectura Ada Lovelace con DLSS 3 para alcanzar 120 FPS fluidos en calidad Alta.',
+          desc_en: 'Ada Lovelace architecture featuring DLSS 3 to hit a smooth 120 FPS on High settings.'
+        },
+        {
+          id: 'rtx4070',
+          name: 'NVIDIA GeForce RTX 4070',
+          spec_es: '12 GB GDDR6X · ~144 FPS Ultra',
+          spec_en: '12 GB GDDR6X · ~144 FPS Ultra',
+          store: 'Mercado Libre',
+          ars: 3235601.34,
+          fps: 144,
+          tier: 3,
+          img: 'https://images.unsplash.com/photo-1591488320449-011701bb6704?auto=format&fit=crop&w=600&q=80',
+          desc_es: 'Rendimiento competitivo extremo para calidad Ultra y monitores gamer de 144Hz.',
+          desc_en: 'Extreme competitive performance for Ultra settings and 144Hz gaming monitors.'
+        }
+      ],
+      ram: [
+        {
+          id: 'ram8',
+          name: 'Hiksemi U100 Sword RGB 8 GB',
+          spec_es: '1 × 8 GB DDR4 · 3200 MHz',
+          spec_en: '1 × 8 GB DDR4 · 3200 MHz',
+          store: 'Maximus Gaming Hardware',
+          ars: 31000,
+          tier: 1,
+          img: 'https://images.unsplash.com/photo-1562976540-1502c2145186?auto=format&fit=crop&w=600&q=80',
+          desc_es: 'Memoria básica DDR4. Conviene sumar un segundo módulo igual para activar Dual Channel (+20% FPS).',
+          desc_en: 'Basic DDR4 memory. Adding a second matching stick enables Dual Channel (+20% FPS).'
+        },
+        {
+          id: 'ram16',
+          name: 'Hiksemi Armor 16 GB',
+          spec_es: '1 × 16 GB DDR5 · 6000 MHz',
+          spec_en: '1 × 16 GB DDR5 · 6000 MHz',
+          store: 'Maximus Gaming Hardware',
+          ars: 179000,
+          tier: 2,
+          img: 'https://images.unsplash.com/photo-1562976540-1502c2145186?auto=format&fit=crop&w=600&q=80',
+          desc_es: 'Estándar gamer moderno DDR5 de alta velocidad (6000 MHz) para juegos sin tirones.',
+          desc_en: 'Modern high-speed DDR5 gaming standard (6000 MHz) for stutter-free gameplay.'
+        },
+        {
+          id: 'ram32',
+          name: 'Corsair Vengeance 32 GB',
+          spec_es: 'DDR5 · 6000 MHz Alto Rendimiento',
+          spec_en: 'DDR5 · 6000 MHz High Performance',
+          store: 'Compra Gamer',
+          ars: 499000,
+          tier: 3,
+          img: 'https://images.unsplash.com/photo-1562976540-1502c2145186?auto=format&fit=crop&w=600&q=80',
+          desc_es: 'Capacidad extrema para juegos pesados, streaming simultáneo y edición profesional.',
+          desc_en: 'Extreme capacity for heavy titles, simultaneous streaming, and pro editing.'
+        }
+      ]
+    };
+
+    // =========================================================
+    // 30 CARTAS DEL GLOSARIO BILINGÜE DEL PROYECTO
+    // =========================================================
+    const GLOSSARY_CARDS = [
+      { id: 1, term: 'Motherboard', es: 'Placa madre', def_es: 'Placa principal donde se conectan todos los componentes de la PC.', def_en: 'Main board where all computer components connect.' },
+      { id: 2, term: 'CPU / Processor', es: 'Procesador', def_es: 'Ejecuta las instrucciones y coordina las tareas de la computadora.', def_en: 'Executes instructions and coordinates computer tasks.' },
+      { id: 3, term: 'GPU / Graphics Card', es: 'Placa de video', def_es: 'Procesa imágenes, gráficos 3D y efectos de los videojuegos.', def_en: 'Processes images, 3D graphics, and game visual effects.' },
+      { id: 4, term: 'RAM / Memory', es: 'Memoria RAM', def_es: 'Almacena temporalmente los datos que están actualmente en uso.', def_en: 'Temporarily stores data currently in use.' },
+      { id: 5, term: 'PSU / Power Supply', es: 'Fuente de poder', def_es: 'Suministra energía eléctrica estable a todos los componentes.', def_en: 'Supplies stable electrical power to all components.' },
+      { id: 6, term: 'Storage', es: 'Almacenamiento', def_es: 'Guarda el sistema operativo, aplicaciones, juegos y archivos.', def_en: 'Stores the operating system, apps, games, and files.' },
+      { id: 7, term: 'BIOS', es: 'Sistema básico', def_es: 'Programa básico que arranca y configura el hardware al encender.', def_en: 'Basic firmware that starts and configures hardware.' },
+      { id: 8, term: 'Driver', es: 'Controlador', def_es: 'Software que permite que el sistema operativo use un dispositivo.', def_en: 'Software that lets the operating system use a device.' },
+      { id: 9, term: 'Format', es: 'Formatear', def_es: 'Preparar y limpiar una unidad de almacenamiento para guardar datos.', def_en: 'Prepare a storage drive to save data from scratch.' },
+      { id: 10, term: 'Overheating', es: 'Sobrecalentamiento', def_es: 'Aumento excesivo de temperatura que baja los FPS para proteger el CPU.', def_en: 'Excessive temperature rise that drops FPS to protect hardware.' },
+      { id: 11, term: 'Thermal Paste', es: 'Pasta térmica', def_es: 'Material conductor que mejora la transferencia de calor al cooler.', def_en: 'Material that improves heat transfer from CPU to cooler.' },
+      { id: 12, term: 'Bottleneck', es: 'Cuello de botella', def_es: 'Cuando un componente lento frena el rendimiento de los demás.', def_en: 'When one slow component limits the performance of others.' },
+      { id: 13, term: 'Upgrade', es: 'Mejora', def_es: 'Reemplazo o mejora de uno o más componentes para ganar potencia.', def_en: 'Improvement or replacement of one or more components.' },
+      { id: 14, term: 'FPS / Frames Per Second', es: 'Cuadros por segundo', def_es: 'Cantidad de imágenes por segundo: 60 fluido, 144 competitivo.', def_en: 'Number of images displayed every second.' },
+      { id: 15, term: 'Lag', es: 'Retraso / Tirón', def_es: 'Demora o falta de fluidez durante una partida.', def_en: 'Delay or stutter in a video game.' },
+      { id: 16, term: 'Build', es: 'Armado de PC', def_es: 'Proceso de elegir y ensamblar los componentes de una computadora.', def_en: 'Process of selecting and assembling PC components.' },
+      { id: 17, term: 'Benchmark', es: 'Prueba de rendimiento', def_es: 'Test técnico que mide y compara la potencia de una PC.', def_en: 'Test that measures a computer’s performance.' },
+      { id: 18, term: 'Install', es: 'Instalar', def_es: 'Agregar un programa o componente físico para que funcione.', def_en: 'Add a program or component so it can work.' },
+      { id: 19, term: 'Backup', es: 'Copia de seguridad', def_es: 'Respaldo de archivos para evitar pérdida de datos.', def_en: 'Copy of files to prevent data loss.' },
+      { id: 20, term: 'Bug', es: 'Error de software', def_es: 'Falla en el código de un programa o videojuego.', def_en: 'Fault in a program or system.' },
+      { id: 21, term: 'Crash', es: 'Cuelgue', def_es: 'Cierre inesperado de un programa o congelamiento del sistema.', def_en: 'Unexpected program closure or system freeze.' },
+      { id: 22, term: 'Cooling', es: 'Refrigeración', def_es: 'Sistema que mantiene temperaturas adecuadas en la PC.', def_en: 'System that helps maintain suitable temperatures.' },
+      { id: 23, term: 'Case', es: 'Gabinete', def_es: 'Estructura que aloja y protege todos los componentes.', def_en: 'Structure that holds and protects components.' },
+      { id: 24, term: 'Slot', es: 'Ranura', def_es: 'Conector de la placa madre donde se instala RAM o GPU.', def_en: 'Connector where a component is installed.' },
+      { id: 25, term: 'Cable Management', es: 'Orden de cables', def_es: 'Organización prolija de cables internos para mejorar el flujo de aire.', def_en: 'Organizing cables inside the case for airflow.' },
+      { id: 26, term: 'Update', es: 'Actualización', def_es: 'Nueva versión que mejora o corrige un sistema o juego.', def_en: 'New version that improves or fixes a system.' },
+      { id: 27, term: 'Setup', es: 'Espacio gamer', def_es: 'Equipamiento completo de PC, monitor y escritorio.', def_en: 'Equipment and settings of a gaming space.' },
+      { id: 28, term: 'Peripheral', es: 'Periférico', def_es: 'Dispositivo externo como teclado, mouse o monitor.', def_en: 'External device such as a keyboard, mouse, or monitor.' },
+      { id: 29, term: 'Performance', es: 'Rendimiento', def_es: 'Capacidad de una computadora para ejecutar tareas con rapidez.', def_en: 'A computer’s ability to perform tasks.' },
+      { id: 30, term: 'Liquid Cooling / Air Cooling / AIO', es: 'Refrigeración líquida / aire', def_es: 'Enfriamiento mediante radiador líquido o disipador con ventilador.', def_en: 'Cooling methods using liquid radiator or heatsink fans.' }
+    ];
+
+    // =========================================================
+    // TRADUCCIONES COMPLETAS (ESPAÑOL POR DEFECTO / INGLÉS)
+    // =========================================================
+    const TEXTS = {
+      es: {
+        brandTitle: 'ARMÁ TU PC SOÑADA',
+        brandSub: 'Expo Técnica 2026 · Hardware + Inglés Técnico',
+        p0: '0. Inicio', p1: '1. Carpeta', p5: '5. Glosario', p6: '6. Ficha QR',
+        themeLight: 'Modo Claro', themeDark: 'Modo Oscuro',
+        musicOn: 'Música OFF', musicPlaying: 'Música ON',
+        heroBadge: 'ARCADE HARDWARE CHALLENGE · EXPO TÉCNICA 2026',
+        heroTitle1: 'ARMÁ TU PC', heroTitle2: 'SOÑADA',
+        heroSlogan: '¿Cuántos FPS tenés? · Desafío Interactivo de Hardware e Inglés Técnico',
+        heroDesc: '¡Bienvenido al stand gamer! Sumergite en esta experiencia tipo videojuego: abrí tu carpeta de campo, elegí procesador, placa de video y memoria RAM con precios reales, coleccioná cartas del glosario bilingüe y llevate tu ficha a todo color o en tu celular mediante código QR.',
+        f1Title: '3 BANDEJAS', f2Title: '30 CARTAS', f2Sub: 'Glosario Coleccionable', f3Title: 'FICHA + QR', f3Sub: 'Imprimible o Móvil',
+        btnStart: 'START / EMPEZAR MISIÓN', btnJumpGloss: 'EXPLORAR GLOSARIO',
+        heroCardSub: 'Instalación de Hardware + Inglés Técnico',
+        dossierTab: 'CARPETA DE CAMPO · EXPEDIENTE',
+        dossierBadge: 'MISIÓN TÉCNICA · PASO PREVIO',
+        dossierTitle: 'EXPEDIENTE DE ARMADO GAMER',
+        playerLabel: 'NOMBRE DEL VISITANTE / GAMER TAG:',
+        playerHelp: 'Tu nombre aparecerá impreso en la ficha de presupuesto oficial y en el código QR para tu celular.',
+        briefTitle: '🎯 OBJETIVOS DE LA MISIÓN:',
+        obj1: 'Seleccionar 1 componente de cada bandeja (CPU, GPU y RAM) evaluando rendimiento y precio.',
+        obj2: 'Elegir cartas técnicas del Glosario Gamer para sumarlas a tu inventario.',
+        obj3: 'Calcular tus FPS reales y llevarte tu ficha a todo color o escaneada por QR.',
+        btnBackStart: 'Volver a Portada', btnOpenTrays: 'ABRIR BANDEJA 1: CPU',
+        t1Badge: 'BANDEJA 01 / 03 · PROCESADOR', t1Title: 'ELEGÍ TU PROCESADOR (CPU)', t1Sub: 'Es el cerebro del equipo: procesa la lógica, física y velocidad de respuesta de los juegos.',
+        btnBackDossier: 'Volver a Carpeta', btnToGpu: 'Siguiente: Bandeja GPU',
+        t2Badge: 'BANDEJA 02 / 03 · GRÁFICOS', t2Title: 'ELEGÍ TU PLACA DE VIDEO (GPU)', t2Sub: 'Renderiza los gráficos 3D y define cuántos cuadros por segundo (FPS) vas a lograr.',
+        btnBackCpu: 'Volver a CPU', btnToRam: 'Siguiente: Bandeja RAM',
+        t3Badge: 'BANDEJA 03 / 03 · MEMORIA', t3Title: 'ELEGÍ TU MEMORIA RAM', t3Sub: 'Guarda temporalmente los datos activos del juego para evitar tirones (Lag) y acelerar cargas.',
+        btnBackGpu: 'Volver a GPU', btnToGlossary: 'Continuar al Glosario',
+        glossBadge: 'CARTAS DE CONOCIMIENTO · 30 TÉRMINOS', selectedCardsCount: 'Cartas elegidas:',
+        glossTitle: 'GLOSARIO GAMER COLECCIONABLE', glossSub: 'Tocá una o más tarjetas para guardarlas en tu mochila y que salgan en tu presupuesto final.',
+        btnBackRam: 'Volver a RAM', btnFinishBudget: 'GENERAR MI PRESUPUESTO + QR',
+        sheetTag: 'FICHA OFICIAL · EXPO TÉCNICA 2026', sheetTitle: 'PRESUPUESTO DREAM PC',
+        sheetPlayer: 'JUGADOR / VISITANTE:', btnPrintColor: 'Imprimir Ficha', btnCopyMobile: 'Copiar Enlace Móvil',
+        sheetHardware: '⚡ HARDWARE SELECCIONADO', sheetTotalLabel: 'INVERSIÓN TOTAL ESTIMADA', sheetUsdLabel: 'DÓLARES (REF. $1.570)',
+        sheetGlossaryTitle: '🃏 CARTAS DE GLOSARIO EN TU PRESUPUESTO', sheetBonusTag: 'BONUS TÉCNICO',
+        sheetFpsTitle: 'RENDIMIENTO ESTIMADO', diagBottleneck: 'CUELLO DE BOTELLA (BOTTLENECK)', diagCooling: 'REFRIGERACIÓN RECOMENDADA',
+        qrBadge: '📱 LLEVATE TU PRESUPUESTO EN EL CELULAR',
+        qrDesc: 'Si no hay impresora, escaneá este código QR con tu cámara para abrir esta misma hoja en tu teléfono:',
+        btnBackGloss: 'Editar Cartas de Glosario', btnNewBuild: 'Nueva Partida / Nuevo Visitante',
+        footerSub: 'Expo Técnica 2026 · Instalación de Hardware + Inglés Técnico'
+      },
+      en: {
+        brandTitle: 'BUILD YOUR DREAM PC',
+        brandSub: 'Technical Expo 2026 · Hardware + Technical English',
+        p0: '0. Home', p1: '1. Dossier', p5: '5. Glossary', p6: '6. QR Sheet',
+        themeLight: 'Light Mode', themeDark: 'Dark Mode',
+        musicOn: 'Music OFF', musicPlaying: 'Music ON',
+        heroBadge: 'ARCADE HARDWARE CHALLENGE · TECHNICAL EXPO 2026',
+        heroTitle1: 'BUILD YOUR', heroTitle2: 'DREAM PC',
+        heroSlogan: 'What is your FPS? · Interactive Hardware & Technical English Challenge',
+        heroDesc: 'Welcome to our gamer booth! Jump into this arcade game experience: open your field dossier, pick CPU, GPU, and RAM with real prices, collect bilingual glossary cards, and take home your full-color budget sheet or scan its QR code onto your phone.',
+        f1Title: '3 TRAYS', f2Title: '30 CARDS', f2Sub: 'Collectible Glossary', f3Title: 'SHEET + QR', f3Sub: 'Printable or Mobile',
+        btnStart: 'START / PLAY MISSION', btnJumpGloss: 'EXPLORE GLOSSARY',
+        heroCardSub: 'Hardware Installation + Technical English',
+        dossierTab: 'FIELD DOSSIER · PLAYER FILE',
+        dossierBadge: 'TECHNICAL MISSION · BRIEFING',
+        dossierTitle: 'GAMER BUILD FIELD DOSSIER',
+        playerLabel: 'VISITOR NAME / GAMER TAG:',
+        playerHelp: 'Your name will appear on the official budget sheet and inside the mobile QR code.',
+        briefTitle: '🎯 MISSION OBJECTIVES:',
+        obj1: 'Pick 1 component from each tray (CPU, GPU, and RAM) evaluating performance and price.',
+        obj2: 'Select technical cards from the Gamer Glossary to add them to your inventory.',
+        obj3: 'Calculate your real FPS and take your full-color sheet or scan the QR code.',
+        btnBackStart: 'Back to Cover', btnOpenTrays: 'OPEN TRAY 1: CPU',
+        t1Badge: 'TRAY 01 / 03 · PROCESSOR', t1Title: 'CHOOSE YOUR PROCESSOR (CPU)', t1Sub: 'The brain of your rig: processes game logic, physics, and response speed.',
+        btnBackDossier: 'Back to Dossier', btnToGpu: 'Next: GPU Tray',
+        t2Badge: 'TRAY 02 / 03 · GRAPHICS', t2Title: 'CHOOSE YOUR GRAPHICS CARD (GPU)', t2Sub: 'Renders 3D graphics and determines how many Frames Per Second (FPS) you achieve.',
+        btnBackCpu: 'Back to CPU', btnToRam: 'Next: RAM Tray',
+        t3Badge: 'TRAY 03 / 03 · MEMORY', t3Title: 'CHOOSE YOUR RAM MEMORY', t3Sub: 'Temporarily stores active game data to prevent stuttering (Lag) and speed up loading.',
+        btnBackGpu: 'Back to GPU', btnToGlossary: 'Continue to Glossary',
+        glossBadge: 'KNOWLEDGE CARDS · 30 TERMS', selectedCardsCount: 'Selected cards:',
+        glossTitle: 'COLLECTIBLE GAMER GLOSSARY', glossSub: 'Tap one or more cards to store them in your backpack so they appear on your final budget.',
+        btnBackRam: 'Back to RAM', btnFinishBudget: 'GENERATE MY BUDGET + QR',
+        sheetTag: 'OFFICIAL SHEET · TECHNICAL EXPO 2026', sheetTitle: 'DREAM PC BUDGET SHEET',
+        sheetPlayer: 'PLAYER / VISITOR:', btnPrintColor: 'Print Sheet', btnCopyMobile: 'Copy Mobile Link',
+        sheetHardware: '⚡ SELECTED HARDWARE', sheetTotalLabel: 'ESTIMATED TOTAL INVESTMENT', sheetUsdLabel: 'US DOLLARS (REF. $1,570)',
+        sheetGlossaryTitle: '🃏 GLOSSARY CARDS IN YOUR BUDGET', sheetBonusTag: 'TECH BONUS',
+        sheetFpsTitle: 'ESTIMATED PERFORMANCE', diagBottleneck: 'BOTTLENECK ANALYSIS', diagCooling: 'RECOMMENDED COOLING',
+        qrBadge: '📱 TAKE YOUR BUDGET ON YOUR PHONE',
+        qrDesc: 'If there is no printer available, scan this QR code with your phone camera to open this exact sheet:',
+        btnBackGloss: 'Edit Glossary Cards', btnNewBuild: 'New Game / New Visitor',
+        footerSub: 'Technical Expo 2026 · Hardware Installation + Technical English'
+      }
+    };
+
+    // =========================================================
+    // MOTOR DE AUDIO REAL Y AUDIBLE (WEB AUDIO API)
+    // =========================================================
+    let audioCtx = null;
+    let masterGain = null;
+    let isMusicOn = false;
+    let musicLoopTimer = null;
+    let beatStep = 0;
+
+    function initAudio() {
+      if (!audioCtx) {
+        const AC = window.AudioContext || window.webkitAudioContext;
+        audioCtx = new AC();
+        masterGain = audioCtx.createGain();
+        const vol = document.getElementById('volSlider').value / 100;
+        masterGain.gain.setValueAtTime(vol * 0.45, audioCtx.currentTime);
+        masterGain.connect(audioCtx.destination);
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+
+    function getVol() {
+      return document.getElementById('volSlider').value / 100;
+    }
+
+    // Efectos de sonido (SFX) tipo arcade
+    function playSFX(type) {
+      try {
+        const vol = getVol();
+        if (vol <= 0.01) return;
+        initAudio();
+        const now = audioCtx.currentTime;
+
+        if (type === 'click') {
+          const osc = audioCtx.createOscillator();
+          const g = audioCtx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(880, now);
+          osc.frequency.exponentialRampToValueAtTime(1320, now + 0.06);
+          g.gain.setValueAtTime(vol * 0.25, now);
+          g.gain.exponentialRampToValueAtTime(0.001, now + 0.07);
+          osc.connect(g); g.connect(audioCtx.destination);
+          osc.start(now); osc.stop(now + 0.075);
+        }
+        else if (type === 'whoosh') {
+          const osc = audioCtx.createOscillator();
+          const g = audioCtx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(320, now);
+          osc.frequency.exponentialRampToValueAtTime(640, now + 0.14);
+          g.gain.setValueAtTime(vol * 0.22, now);
+          g.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+          osc.connect(g); g.connect(audioCtx.destination);
+          osc.start(now); osc.stop(now + 0.16);
+        }
+        else if (type === 'coin') {
+          // Sonido clásico tipo moneda/power-up al elegir hardware o carta
+          [987.77, 1318.51].forEach((freq, i) => {
+            const osc = audioCtx.createOscillator();
+            const g = audioCtx.createGain();
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(freq, now + i * 0.065);
+            g.gain.setValueAtTime(vol * 0.14, now + i * 0.065);
+            g.gain.exponentialRampToValueAtTime(0.001, now + i * 0.065 + 0.18);
+            osc.connect(g); g.connect(audioCtx.destination);
+            osc.start(now + i * 0.065); osc.stop(now + i * 0.065 + 0.19);
+          });
+        }
+        else if (type === 'fanfare') {
+          // Fanfarria de victoria al generar el presupuesto
+          const notes = [523.25, 659.25, 783.99, 1046.50];
+          notes.forEach((freq, i) => {
+            const osc = audioCtx.createOscillator();
+            const g = audioCtx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, now + i * 0.09);
+            g.gain.setValueAtTime(vol * 0.24, now + i * 0.09);
+            g.gain.exponentialRampToValueAtTime(0.001, now + i * 0.09 + 0.35);
+            osc.connect(g); g.connect(audioCtx.destination);
+            osc.start(now + i * 0.09); osc.stop(now + i * 0.09 + 0.36);
+          });
+        }
+      } catch (e) {}
+    }
+
+    // Bucle musical Synthwave / Chiptune melódico (bajo + arpegio agradable)
+    function startMusicLoop() {
+      initAudio();
+      if (isMusicOn) return;
+      isMusicOn = true;
+      beatStep = 0;
+
+      // Progresión Am - F - C - G
+      const bassNotes = [110.00, 110.00, 87.31, 87.31, 130.81, 130.81, 98.00, 98.00];
+      const arpNotes  = [440.00, 523.25, 659.25, 523.25, 349.23, 440.00, 523.25, 659.25,
+                         523.25, 659.25, 783.99, 659.25, 392.00, 493.88, 587.33, 659.25];
+
+      const triggerBeat = () => {
+        if (!isMusicOn || !audioCtx) return;
+        const now = audioCtx.currentTime;
+
+        // 1. Arpegio principal melódico
+        const oscArp = audioCtx.createOscillator();
+        const gainArp = audioCtx.createGain();
+        oscArp.type = 'triangle';
+        oscArp.frequency.setValueAtTime(arpNotes[beatStep % arpNotes.length], now);
+        gainArp.gain.setValueAtTime(0.001, now);
+        gainArp.gain.linearRampToValueAtTime(0.24, now + 0.03);
+        gainArp.gain.exponentialRampToValueAtTime(0.001, now + 0.32);
+        oscArp.connect(gainArp);
+        gainArp.connect(masterGain);
+        oscArp.start(now);
+        oscArp.stop(now + 0.34);
+
+        // 2. Línea de bajo rítmica cada 2 pasos
+        if (beatStep % 2 === 0) {
+          const oscBass = audioCtx.createOscillator();
+          const filter = audioCtx.createBiquadFilter();
+          const gainBass = audioCtx.createGain();
+
+          oscBass.type = 'sawtooth';
+          oscBass.frequency.setValueAtTime(bassNotes[Math.floor(beatStep / 2) % bassNotes.length], now);
+
+          filter.type = 'lowpass';
+          filter.frequency.setValueAtTime(420, now);
+
+          gainBass.gain.setValueAtTime(0.001, now);
+          gainBass.gain.linearRampToValueAtTime(0.32, now + 0.04);
+          gainBass.gain.exponentialRampToValueAtTime(0.001, now + 0.58);
+
+          oscBass.connect(filter);
+          filter.connect(gainBass);
+          gainBass.connect(masterGain);
+          oscBass.start(now);
+          oscBass.stop(now + 0.6);
+        }
+
+        beatStep++;
+      };
+
+      triggerBeat();
+      musicLoopTimer = setInterval(triggerBeat, 340);
+      updateMusicUI();
+    }
+
+    function stopMusicLoop() {
+      isMusicOn = false;
+      if (musicLoopTimer) clearInterval(musicLoopTimer);
+      updateMusicUI();
+    }
+
+    function toggleMusic() {
+      playSFX('click');
+      if (isMusicOn) stopMusicLoop();
+      else startMusicLoop();
+    }
+
+    function updateMusicUI() {
+      const lbl = document.getElementById('musicLabel');
+      const eq = document.getElementById('eqViz');
+      if (isMusicOn) {
+        lbl.textContent = TEXTS[lang].musicPlaying;
+        eq.classList.add('eq-playing');
+      } else {
+        lbl.textContent = TEXTS[lang].musicOn;
+        eq.classList.remove('eq-playing');
+      }
+    }
+
+    // =========================================================
+    // NAVEGACIÓN ENTRE ETAPAS DEL VIDEOJUEGO
+    // =========================================================
+    function startGameMission() {
+      if (!isMusicOn) startMusicLoop();
+      goStage(1, 'whoosh');
+    }
+
+    function goStage(num, sfx = 'click') {
+      if (sfx) playSFX(sfx);
+      currentStage = num;
+      document.querySelectorAll('.stage').forEach(el => el.classList.remove('active'));
+      const target = document.getElementById(`stage-${num}`);
+      if (target) target.classList.add('active');
+
+      document.getElementById('hudLvl').textContent = num;
+
+      for (let i = 0; i <= 6; i++) {
+        const pill = document.getElementById(`pill-${i}`);
+        if (!pill) continue;
+        if (i === num) {
+          pill.className = 'px-2.5 py-0.5 rounded-full bg-[var(--cyan)]/20 text-cyan border border-[var(--cyan)]/50';
+        } else {
+          pill.className = 'px-2 py-0.5 rounded-full text-[var(--text-muted)]';
+        }
+      }
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    }
+
+    function nextFromPart(cat, nextNum) {
+      if (!selectedParts[cat]) {
+        const msg = lang === 'es'
+          ? `⚠️ Elegí una opción de ${cat.toUpperCase()} antes de avanzar.`
+          : `⚠️ Pick a ${cat.toUpperCase()} option before advancing.`;
+        showToast(msg);
+        playSFX('click');
+        return;
+      }
+      goStage(nextNum, 'whoosh');
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.remove('hidden');
+      clearTimeout(t._id);
+      t._id = setTimeout(() => t.classList.add('hidden'), 2600);
+    }
+
+    // =========================================================
+    // RENDERIZADO DE BANDEJAS DE HARDWARE
+    // =========================================================
+    const fmtARS = n => new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 }).format(n);
+    const fmtUSD = n => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(n / RATE);
+
+    function renderHardwareTrays() {
+      ['cpu', 'gpu', 'ram'].forEach(cat => {
+        const grid = document.getElementById(`grid-${cat}`);
+        grid.innerHTML = '';
+
+        HARDWARE[cat].forEach(item => {
+          const active = selectedParts[cat]?.id === item.id;
+          const spec = lang === 'es' ? item.spec_es : item.spec_en;
+          const desc = lang === 'es' ? item.desc_es : item.desc_en;
+
+          const card = document.createElement('div');
+          card.className = `arcade-card p-4 rounded-2xl cursor-pointer flex flex-col justify-between gap-3 ${active ? 'selected' : ''}`;
+          card.onclick = () => {
+            selectedParts[cat] = item;
+            playSFX('coin');
+            renderHardwareTrays();
+          };
+
+          card.innerHTML = `
+            <div class="space-y-2.5">
+              <div class="relative h-36 rounded-xl overflow-hidden bg-black/50 border border-[var(--border-neon)]">
+                <img src="${item.img}" alt="${item.name}" class="w-full h-full object-cover">
+                <span class="absolute top-2 left-2 px-2.5 py-0.5 rounded bg-black/80 text-cyan font-tech text-[10px] font-bold border border-[var(--cyan)]/35">
+                  ${item.store}
+                </span>
+                ${active ? `<span class="absolute top-2 right-2 w-7 h-7 rounded-full bg-cyber-grad text-black font-black flex items-center justify-center shadow-lg">✓</span>` : ''}
+              </div>
+              <div>
+                <h3 class="font-tech text-sm md:text-base font-extrabold">${item.name}</h3>
+                <p class="font-tech text-[11px] font-bold text-purple mt-0.5">${spec}</p>
+                <p class="text-xs text-[var(--text-muted)] mt-1.5 leading-relaxed">${desc}</p>
+              </div>
+            </div>
+
+            <div class="pt-2.5 border-t border-[var(--border-neon)] flex items-center justify-between">
+              <div>
+                <span class="font-tech text-sm font-black text-cyan block">${fmtARS(item.ars)} ARS</span>
+                <span class="font-tech text-[11px] font-bold text-green">${fmtUSD(item.ars)} USD</span>
+              </div>
+              <span class="px-3 py-1 rounded-lg font-tech text-[10px] font-black uppercase ${active ? 'bg-cyber-grad text-black' : 'arcade-card'}">
+                ${active ? (lang === 'es' ? 'EQUIPADO' : 'EQUIPPED') : (lang === 'es' ? 'ELEGIR' : 'PICK')}
+              </span>
+            </div>
+          `;
+          grid.appendChild(card);
+        });
+      });
+    }
+
+    // =========================================================
+    // RENDERIZADO DEL GLOSARIO COLECCIONABLE (30 CARTAS)
+    // =========================================================
+    function renderGlossaryCards() {
+      const grid = document.getElementById('glossaryGrid');
+      const q = document.getElementById('searchInput').value.toLowerCase().trim();
+      grid.innerHTML = '';
+
+      const list = GLOSSARY_CARDS.filter(c =>
+        c.term.toLowerCase().includes(q) ||
+        c.es.toLowerCase().includes(q) ||
+        c.def_es.toLowerCase().includes(q) ||
+        c.def_en.toLowerCase().includes(q)
+      );
+
+      document.getElementById('glossCounter').textContent = selectedGlossaryTerms.size;
+
+      if (!list.length) {
+        grid.innerHTML = `<div class="col-span-full text-center py-8 arcade-card rounded-2xl font-tech text-xs text-[var(--text-muted)]">
+          ${lang === 'es' ? 'No se encontraron cartas con esa búsqueda.' : 'No cards found matching your search.'}
+        </div>`;
+        return;
+      }
+
+      list.forEach(c => {
+        const isPicked = selectedGlossaryTerms.has(c.id);
+        const card = document.createElement('div');
+        card.className = `arcade-card gloss-card p-3.5 rounded-2xl cursor-pointer flex flex-col justify-between gap-2 ${isPicked ? 'selected' : ''}`;
+        card.onclick = () => {
+          if (selectedGlossaryTerms.has(c.id)) {
+            selectedGlossaryTerms.delete(c.id);
+            playSFX('click');
+          } else {
+            selectedGlossaryTerms.add(c.id);
+            playSFX('coin');
+          }
+          renderGlossaryCards();
+        };
+
+        card.innerHTML = `
+          <div>
+            <div class="flex items-start justify-between gap-2 border-b border-[var(--border-neon)] pb-1.5">
+              <h3 class="font-tech text-xs md:text-sm font-bold text-cyan">#${String(c.id).padStart(2, '0')} · ${c.term}</h3>
+              <span class="px-2 py-0.5 rounded bg-[var(--purple)]/20 text-purple font-tech text-[10px] font-bold shrink-0">${c.es}</span>
+            </div>
+            <p class="text-xs text-[var(--text-muted)] mt-1.5 leading-relaxed">${lang === 'es' ? c.def_es : c.def_en}</p>
+          </div>
+          <div class="flex items-center justify-between pt-1.5 text-[10px] font-tech font-bold">
+            <span class="${isPicked ? 'text-purple' : 'text-[var(--text-muted)]'}">
+              ${isPicked ? (lang === 'es' ? '★ GUARDADA EN MOCHILA' : '★ SAVED IN BACKPACK') : (lang === 'es' ? '+ TOCAR PARA ELEGIR' : '+ TAP TO COLLECT')}
+            </span>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    // =========================================================
+    // GENERACIÓN DE HOJA DE PRESUPUESTO A TODO COLOR + QR MÓVIL
+    // =========================================================
+    function openBudgetSheet() {
+      if (!selectedParts.cpu) { showToast(lang === 'es' ? '⚠️ Primero elegí un CPU.' : '⚠️ Pick a CPU first.'); goStage(2); return; }
+      if (!selectedParts.gpu) { showToast(lang === 'es' ? '⚠️ Primero elegí una GPU.' : '⚠️ Pick a GPU first.'); goStage(3); return; }
+      if (!selectedParts.ram) { showToast(lang === 'es' ? '⚠️ Primero elegí una RAM.' : '⚠️ Pick a RAM first.'); goStage(4); return; }
+
+      // Si el visitante no eligió ninguna carta del glosario, se le asigna una carta bonus automática
+      if (selectedGlossaryTerms.size === 0) {
+        selectedGlossaryTerms.add(12); // Bottleneck
+        selectedGlossaryTerms.add(14); // FPS
+      }
+
+      renderBudgetSheet();
+      goStage(6, 'fanfare');
+    }
+
+    function renderBudgetSheet() {
+      const rawName = document.getElementById('playerNameInput').value.trim();
+      const playerName = rawName || (lang === 'es' ? 'VISITANTE EXPO' : 'EXPO VISITOR');
+
+      document.getElementById('sheetPlayerName').textContent = playerName.toUpperCase();
+      document.getElementById('sheetPassCode').textContent = `CODE: ${passCode}`;
+      document.getElementById('qrCodeText').textContent = passCode;
+
+      // Render Hardware
+      const hwBox = document.getElementById('summaryHardware');
+      hwBox.innerHTML = '';
+      let totalARS = 0;
+
+      [
+        { tag: 'CPU', item: selectedParts.cpu, color: 'border-l-[#00f0ff]' },
+        { tag: 'GPU', item: selectedParts.gpu, color: 'border-l-[#bd00ff]' },
+        { tag: 'RAM', item: selectedParts.ram, color: 'border-l-[#ff007f]' }
+      ].forEach(({ tag, item, color }) => {
+        totalARS += item.ars;
+        const spec = lang === 'es' ? item.spec_es : item.spec_en;
+        const row = document.createElement('div');
+        row.className = `arcade-card p-3 rounded-xl flex items-center justify-between gap-3 border-l-4 ${color}`;
+        row.innerHTML = `
+          <div class="flex items-center gap-3 min-w-0">
+            <img src="${item.img}" alt="${item.name}" class="w-12 h-12 rounded-lg object-cover shrink-0">
+            <div class="min-w-0">
+              <span class="font-tech text-[10px] font-black px-2 py-0.5 rounded bg-[var(--cyan)]/20 text-cyan">${tag}</span>
+              <h4 class="font-tech text-xs md:text-sm font-bold truncate mt-0.5">${item.name}</h4>
+              <p class="text-[11px] text-[var(--text-muted)] truncate">${spec}</p>
+            </div>
+          </div>
+          <div class="text-right shrink-0">
+            <span class="font-tech text-xs md:text-sm font-black text-cyan block">${fmtARS(item.ars)}</span>
+            <span class="font-tech text-[11px] font-bold text-green">${fmtUSD(item.ars)} USD</span>
+          </div>
+        `;
+        hwBox.appendChild(row);
+      });
+
+      document.getElementById('sheetTotalARS').textContent = `${fmtARS(totalARS)} ARS`;
+      document.getElementById('sheetTotalUSD').textContent = `${fmtUSD(totalARS)} USD`;
+
+      // Render Cartas de Glosario Elegidas en el presupuesto
+      const glossBox = document.getElementById('summaryGlossaryCards');
+      glossBox.innerHTML = '';
+      const pickedCards = GLOSSARY_CARDS.filter(c => selectedGlossaryTerms.has(c.id));
+
+      pickedCards.forEach(c => {
+        const div = document.createElement('div');
+        div.className = 'p-2.5 rounded-xl bg-[var(--bg-main)]/75 border border-[var(--purple)]/40';
+        div.innerHTML = `
+          <div class="flex items-center justify-between gap-1">
+            <span class="font-tech text-[11px] font-bold text-cyan">${c.term}</span>
+            <span class="font-tech text-[9px] font-bold text-purple">${c.es}</span>
+          </div>
+          <p class="text-[11px] text-[var(--text-muted)] mt-1 leading-snug">${lang === 'es' ? c.def_es : c.def_en}</p>
+        `;
+        glossBox.appendChild(div);
+      });
+
+      // Cálculo de FPS y diagnósticos
+      let fps = selectedParts.gpu.fps;
+      if (selectedParts.cpu.tier < selectedParts.gpu.tier || selectedParts.ram.tier === 1) {
+        fps = Math.max(60, Math.round(fps * 0.82));
+      }
+      document.getElementById('sheetFpsValue').textContent = `${fps} FPS`;
+
+      const badge = document.getElementById('sheetFpsBadge');
+      const note = document.getElementById('sheetFpsNote');
+      if (fps >= 144) {
+        badge.textContent = lang === 'es' ? 'NIVEL COMPETITIVO ULTRA (144 FPS)' : 'ULTRA COMPETITIVE LEVEL (144 FPS)';
+        note.textContent = lang === 'es' ? 'Fluidez extrema ideal para monitores de 144Hz y eSports.' : 'Extreme smoothness ideal for 144Hz monitors and eSports.';
+      } else if (fps >= 110) {
+        badge.textContent = lang === 'es' ? 'NIVEL ALTO FLUIDO (120 FPS)' : 'HIGH SMOOTH LEVEL (120 FPS)';
+        note.textContent = lang === 'es' ? 'Excelente rendimiento en 1080p calidad Alta.' : 'Great performance at 1080p High settings.';
+      } else {
+        badge.textContent = lang === 'es' ? 'NIVEL ESTABLE FLUIDO (60 - 90 FPS)' : 'STABLE SMOOTH LEVEL (60 - 90 FPS)';
+        note.textContent = lang === 'es' ? 'Jugabilidad fluida superando los 60 FPS en calidad Media/Alta.' : 'Smooth gameplay exceeding 60 FPS on Medium/High settings.';
+      }
+
+      const bText = document.getElementById('sheetBottleneck');
+      if (selectedParts.cpu.tier < selectedParts.gpu.tier) {
+        bText.textContent = lang === 'es'
+          ? `Cuello de botella detectado: ${selectedParts.cpu.name} limita a ${selectedParts.gpu.name}. Conviene un Upgrade de CPU.`
+          : `Bottleneck detected: ${selectedParts.cpu.name} limits ${selectedParts.gpu.name}. A CPU Upgrade is advised.`;
+      } else if (selectedParts.ram.tier === 1) {
+        bText.textContent = lang === 'es'
+          ? `8 GB Single Channel puede causar tirones (Lag). Sumar otro módulo activa Dual Channel (+20% FPS).`
+          : `8 GB Single Channel may cause Lag. Adding a matching stick activates Dual Channel (+20% FPS).`;
+      } else {
+        bText.textContent = lang === 'es'
+          ? `¡Sin cuello de botella! Hardware equilibrado para aprovechar el 100% de tus FPS.`
+          : `No bottleneck! Balanced hardware to get 100% of your FPS.`;
+      }
+
+      const cText = document.getElementById('sheetCooling');
+      if (selectedParts.cpu.tier === 3 || fps >= 144) {
+        cText.textContent = lang === 'es'
+          ? `Se recomienda Refrigeración Líquida AIO 240mm para evitar Overheating. Verificar socket y DDR4/DDR5.`
+          : `240mm AIO Liquid Cooling recommended to prevent Overheating. Verify socket and DDR4/DDR5.`;
+      } else {
+        cText.textContent = lang === 'es'
+          ? `Air Cooling con pasta térmica renovada es suficiente. Chequear compatibilidad de socket y RAM.`
+          : `Air Cooling with fresh thermal paste is enough. Check socket and RAM compatibility.`;
+      }
+
+      // Generar URL compartible y Código QR real escaneable
+      generateBudgetQR(playerName, totalARS, fps, pickedCards);
+    }
+
+    function buildShareableURL(playerName) {
+      const payload = {
+        p: playerName,
+        c: selectedParts.cpu.id,
+        g: selectedParts.gpu.id,
+        r: selectedParts.ram.id,
+        k: Array.from(selectedGlossaryTerms),
+        code: passCode,
+        l: lang
+      };
+      const encoded = btoa(encodeURIComponent(JSON.stringify(payload)));
+      const baseUrl = window.location.href.split('?')[0].split('#')[0];
+      // Si se abre en file:// o entorno local sin dominio público, creamos URL o texto estructurado
+      if (baseUrl.startsWith('http')) {
+        return `${baseUrl}?build=${encoded}`;
+      }
+      return `BUILD YOUR DREAM PC (${passCode}) | ${playerName} | CPU: ${selectedParts.cpu.name} | GPU: ${selectedParts.gpu.name} | RAM: ${selectedParts.ram.name} | TOTAL: ${fmtARS(selectedParts.cpu.ars + selectedParts.gpu.ars + selectedParts.ram.ars)} (${fmtUSD(selectedParts.cpu.ars + selectedParts.gpu.ars + selectedParts.ram.ars)} USD)`;
+    }
+
+    function generateBudgetQR(playerName, totalARS, fps, pickedCards) {
+      const box = document.getElementById('qrcodeBox');
+      box.innerHTML = '';
+      const qrData = buildShareableURL(playerName);
+
+      try {
+        new QRCode(box, {
+          text: qrData,
+          width: 148,
+          height: 148,
+          colorDark: '#030712',
+          colorLight: '#ffffff',
+          correctLevel: QRCode.CorrectLevel.M
+        });
+      } catch (e) {
+        box.innerHTML = `<div class="p-3 font-tech text-xs text-black font-bold">${passCode}</div>`;
+      }
+    }
+
+    function copyMobileLink() {
+      playSFX('coin');
+      const playerName = document.getElementById('playerNameInput').value.trim() || 'VISITANTE EXPO';
+      const link = buildShareableURL(playerName);
+      const temp = document.createElement('textarea');
+      temp.value = link;
+      document.body.appendChild(temp);
+      temp.select();
+      document.execCommand('copy');
+      document.body.removeChild(temp);
+      showToast(lang === 'es' ? '📱 ¡Enlace del presupuesto copiado para el teléfono!' : '📱 Mobile budget link copied!');
+    }
+
+    function restartAllGame() {
+      selectedParts = { cpu: null, gpu: null, ram: null };
+      selectedGlossaryTerms.clear();
+      document.getElementById('playerNameInput').value = '';
+      passCode = 'PC-2026-' + Math.floor(1000 + Math.random() * 9000);
+      document.getElementById('dossierCodePreview').textContent = passCode;
+      renderHardwareTrays();
+      renderGlossaryCards();
+      // Limpiar parámetro ?build si existía
+      if (window.history && window.location.search.includes('build=')) {
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+      goStage(0, 'whoosh');
+    }
+
+    // =========================================================
+    // CARGA AUTOMÁTICA SI EL VISITANTE ESCANEÓ EL QR EN SU CELULAR
+    // =========================================================
+    function checkIncomingQRBuild() {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const raw = params.get('build');
+        if (!raw) return false;
+        const data = JSON.parse(decodeURIComponent(atob(raw)));
+        const cpu = HARDWARE.cpu.find(x => x.id === data.c);
+        const gpu = HARDWARE.gpu.find(x => x.id === data.g);
+        const ram = HARDWARE.ram.find(x => x.id === data.r);
+        if (cpu && gpu && ram) {
+          selectedParts = { cpu, gpu, ram };
+          if (Array.isArray(data.k)) selectedGlossaryTerms = new Set(data.k);
+          if (data.code) passCode = data.code;
+          if (data.l === 'en' || data.l === 'es') lang = data.l;
+          document.getElementById('playerNameInput').value = data.p || 'VISITANTE EXPO';
+          applyLanguage();
+          renderBudgetSheet();
+          goStage(6, null);
+          return true;
+        }
+      } catch (e) {}
+      return false;
+    }
+
+    // =========================================================
+    // IDIOMA (100% ESPAÑOL POR DEFECTO) Y TEMA CLARO / OSCURO
+    // =========================================================
+    function applyLanguage() {
+      document.documentElement.lang = lang;
+      const dict = TEXTS[lang];
+
+      document.querySelectorAll('[data-t]').forEach(el => {
+        const k = el.getAttribute('data-t');
+        if (dict[k]) el.textContent = dict[k];
+      });
+
+      document.getElementById('langLabel').textContent = lang === 'es' ? 'English' : 'Español';
+      document.getElementById('themeIcon').textContent = darkMode ? '☀️' : '🌙';
+      document.getElementById('themeLabel').textContent = darkMode ? dict.themeLight : dict.themeDark;
+      document.getElementById('searchInput').placeholder = lang === 'es'
+        ? '🔎 Buscar entre las 30 cartas técnicas...'
+        : '🔎 Search across all 30 technical cards...';
+      document.getElementById('playerNameInput').placeholder = lang === 'es'
+        ? 'Ej: Alex Gamer / Visitante Expo'
+        : 'E.g.: Alex Gamer / Expo Visitor';
+
+      updateMusicUI();
+      renderHardwareTrays();
+      renderGlossaryCards();
+      if (currentStage === 6) renderBudgetSheet();
+    }
+
+    // =========================================================
+    // INICIALIZACIÓN DE EVENTOS
+    // =========================================================
+    window.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('dossierCodePreview').textContent = passCode;
+
+      document.getElementById('langBtn').addEventListener('click', () => {
+        playSFX('click');
+        lang = lang === 'es' ? 'en' : 'es';
+        applyLanguage();
+      });
+
+      document.getElementById('themeBtn').addEventListener('click', () => {
+        playSFX('click');
+        darkMode = !darkMode;
+        document.body.classList.toggle('light', !darkMode);
+        applyLanguage();
+      });
+
+      document.getElementById('musicBtn').addEventListener('click', toggleMusic);
+
+      document.getElementById('volSlider').addEventListener('input', e => {
+        const v = e.target.value / 100;
+        if (masterGain && audioCtx) {
+          masterGain.gain.setTargetAtTime(v * 0.45, audioCtx.currentTime, 0.06);
+        }
+      });
+
+      document.getElementById('searchInput').addEventListener('input', renderGlossaryCards);
+
+      if (!checkIncomingQRBuild()) {
+        applyLanguage();
+      }
+    });
+  </script>
+</body>
+</html>
